@@ -6,7 +6,9 @@ An n8n community node for [Ahel](https://ahel.ai): pay-per-call data tasks from 
 
 In n8n: **Settings → Community nodes → Install**, enter `n8n-nodes-ahel`, and confirm.
 
-Self-hosted from the command line: `npm install n8n-nodes-ahel` in your n8n custom nodes folder (`~/.n8n/nodes`), then restart n8n.
+Self-hosted from the command line: `npm install --legacy-peer-deps n8n-nodes-ahel` in your n8n custom nodes folder (`~/.n8n/nodes`), then restart n8n. Without `--legacy-peer-deps`, npm also installs the `n8n-workflow` peer, whose native dependencies may fail to build; n8n itself already provides it.
+
+Package: [npmjs.com/package/n8n-nodes-ahel](https://www.npmjs.com/package/n8n-nodes-ahel), published from this repository's GitHub Actions with provenance.
 
 ## Credentials
 

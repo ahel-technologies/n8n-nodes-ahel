@@ -19,7 +19,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/ahel-technologies/n8n-nodes-ahel.git"
+		"url": "git+https://github.com/ahel-technologies/n8n-nodes-ahel.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
@@ -55,5 +55,8 @@
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

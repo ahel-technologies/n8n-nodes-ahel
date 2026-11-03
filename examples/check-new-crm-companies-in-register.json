@@ -1,0 +1,238 @@
+{
+  "name": "Ahel: check new CRM companies against the official register",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-crm-company",
+        "options": {}
+      },
+      "id": "b2f0c002-0000-4000-8000-000000000001",
+      "name": "New company in CRM",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "b2f0c002-0000-4000-8000-0000000000aa"
+    },
+    {
+      "parameters": {
+        "operation": "checkCompany",
+        "companyName": "={{ $json.body.name }}",
+        "country": "={{ $json.body.country }}",
+        "options": {
+          "maxResults": 3,
+          "maxCostUsd": 0.02,
+          "tag": "crm-register-check"
+        }
+      },
+      "id": "b2f0c002-0000-4000-8000-000000000002",
+      "name": "Check the register",
+      "type": "n8n-nodes-ahel.ahel",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.match_quality }}",
+              "rightValue": "exact",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b2f0c002-0000-4000-8000-000000000003",
+      "name": "Exact match?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "s1",
+              "name": "crm_company",
+              "value": "={{ $('New company in CRM').item.json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "s2",
+              "name": "registered_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "s3",
+              "name": "registry_code",
+              "value": "={{ $json.registry_code }}",
+              "type": "string"
+            },
+            {
+              "id": "s4",
+              "name": "register_status",
+              "value": "={{ $json.status }}",
+              "type": "string"
+            },
+            {
+              "id": "s5",
+              "name": "source_url",
+              "value": "={{ $json.source_url }}",
+              "type": "string"
+            },
+            {
+              "id": "s6",
+              "name": "cost_usd",
+              "value": "={{ $json.cost_usd }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2f0c002-0000-4000-8000-000000000004",
+      "name": "Verified: update the CRM record",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "crm_company",
+              "value": "={{ $('New company in CRM').item.json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "r2",
+              "name": "reason",
+              "value": "={{ $json.found ? 'Closest register match is ' + $json.match_quality + ': ' + $json.name : 'Not found in the register' }}",
+              "type": "string"
+            },
+            {
+              "id": "r3",
+              "name": "candidates",
+              "value": "={{ $json.results }}",
+              "type": "array"
+            },
+            {
+              "id": "r4",
+              "name": "cost_usd",
+              "value": "={{ $json.cost_usd }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2f0c002-0000-4000-8000-000000000005",
+      "name": "Review by hand",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        660,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Check new CRM companies\nPoint your CRM's *company created* webhook (HubSpot workflow, Pipedrive webhook, Attio, a form) at this Webhook with a JSON body `{\"name\": \"Bolt Technology\", \"country\": \"EE\"}`.\n\nAhel looks the name up in the official register for that country (companies.register.search, at most $0.02 a check). An exact match goes to the top branch with the registry code and status; anything else goes to review with up to three candidates. Replace the two Set nodes with your CRM's update node.",
+        "height": 300,
+        "width": 440
+      },
+      "id": "b2f0c002-0000-4000-8000-000000000006",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -360
+      ]
+    }
+  ],
+  "connections": {
+    "New company in CRM": {
+      "main": [
+        [
+          {
+            "node": "Check the register",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the register": {
+      "main": [
+        [
+          {
+            "node": "Exact match?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exact match?": {
+      "main": [
+        [
+          {
+            "node": "Verified: update the CRM record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Review by hand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,59 @@
+{
+	"name": "n8n-nodes-ahel",
+	"version": "0.1.0",
+	"description": "Ahel for n8n: run pay-per-call data tasks (work emails, EU company register checks, any catalog task) with the exact cost on every item.",
+	"license": "MIT",
+	"homepage": "https://ahel.ai/guides/ahel-in-n8n-and-make",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"ahel",
+		"enrichment",
+		"email finder",
+		"company register",
+		"pay per call"
+	],
+	"author": {
+		"name": "Ahel Technologies OÜ",
+		"email": "support@ahel.ai"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ahel-technologies/n8n-nodes-ahel.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "tsc -p tsconfig.test.json && node --test dist-test/test/client.test.mjs",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/AhelApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Ahel/Ahel.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "0.55.4",
+		"@types/node": "^22.0.0",
+		"eslint": "9.32.0",
+		"n8n-workflow": "2.16.0",
+		"prettier": "3.6.2",
+		"release-it": "^21.1.0",
+		"typescript": "5.9.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

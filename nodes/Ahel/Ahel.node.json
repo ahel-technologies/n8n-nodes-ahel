@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-ahel.ahel",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Data & Storage", "Sales"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/ahel-technologies/n8n-nodes-ahel#credentials"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://ahel.ai/guides/ahel-in-n8n-and-make"
+			}
+		]
+	}
+}
